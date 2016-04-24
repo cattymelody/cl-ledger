@@ -30,32 +30,43 @@ If you are using git please also clone the \"ledger\" submodule." expected-path)
       (time
        (map ()
             (lambda (file &aux printedp)
-              (with-open-file (in file)
-                (map-ledger-chunks-on-shared-buffer 
-                 (make-instance 'row-column-input-stream  
-                                :stream in)
+              (flet ((parse% (buffer)
+                       (handler-bind
+                           ((space-in-name
+                             (lambda (warning)
+                               (warn 'space-in-name-with-context
+                                     :text buffer
+                                     :file file
+                                     :inner-error warning)
+                               (invoke-restart 'muffle-warning)))
+                            (error (lambda (x)
+                                     (declare (ignore x))
+                                     (return-from parse% nil))))
+                         (parse 'cl-ledger-parsers.esrap::chunk
+                                buffer))))
+                (with-open-file (in file)
+                  (map-ledger-chunks-on-shared-buffer 
+                   (make-instance 'row-column-input-stream  
+                                  :stream in)
 
-                 ;; PRINT CHUNKS THAT CANNOT BE PARSED
-                 (lambda (string type position &rest args)
-                   (destructuring-bind (row col char) position
-                     (declare (ignore col))
+                   ;; PRINT CHUNKS THAT CANNOT BE PARSED
+                   (lambda (string type position &rest args)
+                     (destructuring-bind (row col char) position
+                       (declare (ignore col))
 
-                     (case type
-                       (:chunk (setf string
-                                     (unless (ignore-errors
-                                               (parse 'cl-ledger-parsers.esrap::chunk
-                                                      string))
-                                       (unless printedp
-                                         (setf printedp t)
-                                         (format t "~&#|~%#~90,1,0,'=A~%#|~%"
-                                                 (format nil "| ~A "
-                                                         (if relativep
-                                                             (uiop:enough-pathname file root)
-                                                             file))))
-                                                       
-                                       (format t "~&#~80,1,0,'-<~A~;[Line ~A, Position ~A]~>~%~A"
-                                               (format nil "[~S~{ ~S~}]" type args)
-                                               row
-                                               char
-                                               string))))))))))
+                       (case type
+                         (:chunk (unless (parse% string)
+                                   (unless printedp
+                                     (setf printedp t)
+                                     (format t "~&#|~%#~90,1,0,'=A~%#|~%"
+                                             (format nil "| ~A "
+                                                     (if relativep
+                                                         (uiop:enough-pathname file root)
+                                                         file))))
+
+                                   (format t "~&#~80,1,0,'-<~A~;[Line ~A, Position ~A]~>~%~A"
+                                           (format nil "[~S~{ ~S~}]" type args)
+                                           row
+                                           char
+                                           string))))))))))
             files)))))
