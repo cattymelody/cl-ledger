@@ -57,6 +57,11 @@ precisely, it should be ready to accept:
   - A keyword argument TYPE specifying the kind of chunk that was
     parsed (see below).
 
+  - Position in stream at the beginning of the chunk. The position is
+    obtained by a call to STREAM-EXTENDED-POSITION, which might report
+    more information that simply FILE-POSITION. It is used for example
+    to report current row in file.
+
   - Zero or more arguments associated with the current value of TYPE.
 
 The following describes the possible configurations of TYPE and the
