@@ -41,4 +41,5 @@
   (:use #:cl
         #:esrap
         #:cl-ledger-utils.row-column-input-stream
-        #:cl-ledger-parsers.chunks))
+        #:cl-ledger-parsers.chunks
+        #:cl-ledger-parsers.esrap))
