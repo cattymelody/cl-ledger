@@ -281,7 +281,6 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
            ;; intermediate lines as garbage.
            (scan-match line
              ("^\\S" (emit :garbage current-error)
-                     (setf state #'default)
                      (default line))
              (t (buffer line))))
 
