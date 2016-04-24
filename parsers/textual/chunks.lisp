@@ -14,7 +14,7 @@
 
 (defgeneric stream-extended-position (stream)
   (:documentation
-   "Calls STREAM-FILE-POSITION by default, but can be specialised to return more.")
+   "Calls FILE-POSITION by default, but can be specialised to return more.")
   (:method (s) (file-position s)))
 
 ;;;;
