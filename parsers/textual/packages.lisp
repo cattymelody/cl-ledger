@@ -33,7 +33,9 @@
 (defpackage :cl-ledger-parsers.esrap
   (:use #:cl
         #:esrap
-        #:cl-ledger-parsers.chunks))
+        #:cl-ledger-parsers.chunks)
+  (:export #:chunk
+           #:transaction))
 
 (defpackage :cl-ledger-parsers.test
   (:use #:cl
