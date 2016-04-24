@@ -2,13 +2,26 @@
 
 ;;;; TODO REORDER RULES LOGICALLY
 
-(define-condition whitespace-at-boundaries (warning)
+(define-condition space-in-name (warning)
   ((name :initarg :name))
   (:report
    (lambda (warning stream)
      (format stream
              "Whitespace at boundaries of account name: ~S"
              (slot-value warning 'name)))))
+
+(define-condition space-in-name-with-context (warning)
+  ((text :initarg :text)
+   (file :initarg :file)
+   (inner-error :initarg :inner-error))
+  (:report
+   (lambda (warning stream)
+     (with-slots (text file inner-error) warning
+         (format stream
+                 "~A~&~A~%~%~A~%"
+                 inner-error
+                 file
+                 text)))))
 
 (defun unspace (args)
   (remove 'whitespace args))
@@ -97,24 +110,24 @@
                               ,@(mapcar #'second newline-and-postings))))
 
 (defrule account-name
-    (+ (not (or #\( #\) #\[ #\] #\: __)))
-  (:lambda (match)
-    (text match)))
+    (+ (not (or #\newline #\( #\) #\[ #\] #\: __)))
+  (:text t))
 
 (defrule concrete-account
     (and account-name
          (* (and #\:
                  account-name)))
-  (:destructure (name rest)
+  (:destructure (first-name rest)
                 (list* :concrete
-                       name
-                       (mapcar
-                        (lambda (data)
-                          (let ((name (second data)))
-                            (prog1 name
-                              (when (ppcre:scan "^\\s+|\\s+$" name)
-                                (warn 'whitespace-at-boundaries :name name)))))
-                               rest))))
+                       (loop
+                          for ((sep raw) . tail) on (cons (list t first-name) rest)
+                          for name = (if tail
+                                         raw
+                                         (ppcre:regex-replace "\\s*$" raw ""))
+                          when (ppcre:scan "^\\s+|\\s+$" name)
+                          do (warn 'space-in-name
+                                   :name name)
+                            collect name))))
 
 (defrule unchecked-virtual-account
     (and #\( concrete-account #\))

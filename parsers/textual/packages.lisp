@@ -35,7 +35,9 @@
         #:esrap
         #:cl-ledger-parsers.chunks)
   (:export #:chunk
-           #:transaction))
+           #:transaction
+           #:space-in-name
+           #:space-in-name-with-context))
 
 (defpackage :cl-ledger-parsers.test
   (:use #:cl
