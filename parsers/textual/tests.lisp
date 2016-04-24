@@ -14,8 +14,6 @@
     Expenses:Unknown                             $10
     Equity:Unknown")
 
-(parse 'positive-quantity "9700,00")
-
 (parse 'chunk
        "2009/02/03 Entry
     Expenses:Cash                 $100.00

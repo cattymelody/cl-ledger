@@ -1,9 +1,6 @@
 (in-package :cl-ledger-parsers.esrap)
 
-;;;;; ESRAP (move to another package)
-
 ;;;; TODO REORDER RULES LOGICALLY
-
 
 (define-condition whitespace-at-boundaries (warning)
   ((name :initarg :name))
