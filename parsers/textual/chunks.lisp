@@ -295,7 +295,6 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
              ("^[;#*|]" (buffer line))
              (t
               (emit :line-comments)
-              (setf state #'default)
               (default line))))
          
          (delimited-block (line)
