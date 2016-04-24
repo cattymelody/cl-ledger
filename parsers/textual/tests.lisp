@@ -1,7 +1,5 @@
 (in-package :cl-ledger-parsers.test)
 
-
-
 (parse 'transaction
        "  2012-03-09 KFC
     Assets:Cash                  $75

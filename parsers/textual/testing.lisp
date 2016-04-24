@@ -1,6 +1,5 @@
 (in-package :cl-ledger-parsers.test)
 
-
 (defmethod stream-extended-position ((s row-column-input-stream))
   (list (stream-row s)
         (stream-column s)
