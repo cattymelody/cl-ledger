@@ -386,10 +386,10 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
                         ;; control. Otherwise, the state machine is
                         ;; reset. This is useful in particular in
                         ;; combination with the restart established by
-                        ;; MAP-LINES%, which allows to skip a single
-                        ;; line. In that case, calling (RESET) allows
-                        ;; to empty the buffer and retry with the
-                        ;; default state.
+                        ;; MAP-LINES-ON-SHARED-BUFFER, which allows to
+                        ;; skip a single line. In that case, calling
+                        ;; (RESET) allows to empty the buffer and
+                        ;; retry with the default state.
                         (reset)))))
       (when (plusp (fill-pointer buffer))
         (restart-case
