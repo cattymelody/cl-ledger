@@ -31,14 +31,18 @@
 
 (cl:in-package :asdf-user)
 
-(defsystem :cl-ledger
+(defsystem :cl-ledger-core
   :serial t
   :description "Double-entry accounting system."
   :author "Johh Wiegley <jwiegley@gmail.com>"
   :maintainer "Christophe Junke <junke.christophe@gmail.com>"
   :license "BSD-3"
   :version "4.0.0"
-  :depends-on (:local-time :periods-series :cambl :cl-ppcre)
+  :depends-on (:local-time
+               :periods-series
+               :cambl
+               :cl-ppcre
+               :cl-ledger-utils)
   :components
   ((:module "core"
 	    :components ((:file "packages")
@@ -71,13 +75,28 @@
 			 (:file "print")
 			 (:file "entry"))
 	    :serial t)
-
-   (:module "parsers"
-	    :components
-	    ((:module "textual"
-	      :components ((:file "textual")
-			   (:file "autoentry" :depends-on ("textual"))
-			   (:file "perentry" :depends-on ("textual")))
-	      :serial t)))
-
    (:file "driver")))
+
+(defsystem :cl-ledger-printers
+  :serial t
+  :description "Textual parsers for CL-LEDGER"
+  :author "Johh Wiegley <jwiegley@gmail.com>"
+  :maintainer "Christophe Junke <junke.christophe@gmail.com>"
+  :license "BSD-3"
+  :version "4.0.0"
+  :depends-on (:cl-ledger-core))
+
+(defsystem :cl-ledger
+  :serial t
+  :description "Double-entry accounting system."
+  :author "Johh Wiegley <jwiegley@gmail.com>"
+  :maintainer "Christophe Junke <junke.christophe@gmail.com>"
+  :license "BSD-3"
+  :version "4.0.0"
+  :depends-on (:local-time
+               :periods-series
+               :cambl
+               :cl-ppcre
+               :unix-options
+               :cl-ledger-core
+               :cl-ledger-parsers))
