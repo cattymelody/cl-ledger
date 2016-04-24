@@ -152,7 +152,6 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
              (function state))
     (labels
         ((reset ()
-           ;; Initialize this parser's state
            (setf current-error         nil
                  block-terminator      nil
                  test-command          nil
@@ -165,10 +164,10 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
            ;; Add CHARACTER into internal buffer, extending it if
            ;; necessary. There is a maximal buffer size over which a
            ;; continuable error is reported, in order to provide a
-           ;; regular behavior across before hitting implementation-
-           ;; defined handling of memory over-allocation.  Also, set
-           ;; START-POSITION if this is the first time (since reset)
-           ;; that we add a line.
+           ;; regular behavior before hitting implementation-defined
+           ;; way of memory over-allocation.  Also, set START-POSITION
+           ;; if this is the first time (since reset) that we add a
+           ;; line.
            (unless start-position
              (setf start-position
                    (stream-extended-position stream)))
@@ -192,10 +191,10 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
            (add #\newline))
 
          (emit (type &rest args)
-           ;; Call user function with current buffer's content and
-           ;; reset the state, a keyword representing the type of the
-           ;; chunk that was parsed as well as additional data
-           ;; meaningful for that type.
+           ;; Call user function with current buffer's content, a
+           ;; keyword representing the type of the chunk that was
+           ;; parsed as well as additional data meaningful for that
+           ;; type. Then reset the state,
            
            (when (plusp (fill-pointer buffer))
              ;; Since we always add a newline in the #'BUFFER function
