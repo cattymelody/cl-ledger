@@ -115,8 +115,8 @@
                         (lambda (data)
                           (let ((name (second data)))
                             (prog1 name
-                              (when (ppcre:scan "^\s+|\s+$" name)
-                                (warn 'whitespace-at-boundaries name)))))
+                              (when (ppcre:scan "^\\s+|\\s+$" name)
+                                (warn 'whitespace-at-boundaries :name name)))))
                                rest))))
 
 (defrule unchecked-virtual-account
