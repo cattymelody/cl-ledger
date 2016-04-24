@@ -54,13 +54,13 @@ precisely, it should be ready to accept:
     example, do not use the :SHAREDP option in CL-PPCRE since the
     content of the buffer will change over time.
 
+  - The position in the the stream at the beginning of the chunk. The
+    position is obtained by a call to STREAM-EXTENDED-POSITION, which
+    might report more information that simply FILE-POSITION. It is
+    used for example to report current row in file.
+
   - A keyword argument TYPE specifying the kind of chunk that was
     parsed (see below).
-
-  - Position in stream at the beginning of the chunk. The position is
-    obtained by a call to STREAM-EXTENDED-POSITION, which might report
-    more information that simply FILE-POSITION. It is used for example
-    to report current row in file.
 
   - Zero or more arguments associated with the current value of TYPE.
 
@@ -217,8 +217,8 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
            
            (apply function
                   buffer
+                  (or start-position (stream-extended-position stream))
                   type
-                  (or start-position (stream-extended-position stream)) 
                   args)
            (reset))
 

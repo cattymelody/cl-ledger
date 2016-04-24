@@ -50,7 +50,7 @@ If you are using git please also clone the \"ledger\" submodule." expected-path)
                                   :stream in)
 
                    ;; PRINT CHUNKS THAT CANNOT BE PARSED
-                   (lambda (string type position &rest args)
+                   (lambda (string position type &rest args)
                      (destructuring-bind (row col char) position
                        (declare (ignore col))
 
