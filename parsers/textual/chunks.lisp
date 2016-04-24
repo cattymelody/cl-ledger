@@ -164,7 +164,7 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
            ;; Add CHARACTER into internal buffer, extending it if
            ;; necessary. There is a maximal buffer size over which a
            ;; continuable error is reported, in order to provide a
-           ;; regular behavior before hitting implementation-defined
+           ;; regular behavior before triggering this implementation's
            ;; way of memory over-allocation.  Also, set START-POSITION
            ;; if this is the first time (since reset) that we add a
            ;; line.
