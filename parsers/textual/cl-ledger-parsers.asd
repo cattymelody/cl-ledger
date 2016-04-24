@@ -46,9 +46,10 @@
    (:file "lines" :depends-on ("packages"))
    (:file "chunks" :depends-on ("lines"))
    
-   (:file "python" :depends-on ("packages"))
+   ;; (:file "python" :depends-on ("packages"))
    (:file "esrap" :depends-on ("packages"))
-   (:file "parser" :depends-on ("python" "chunks" "esrap"))
+   (:file "parser" :depends-on (;; "python"
+                                "chunks" "esrap"))
 
    ;; TEMPORARY
    (:file "testing" :depends-on ("chunks" "esrap"))
