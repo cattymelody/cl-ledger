@@ -378,7 +378,7 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
                              (setf normal-exit-p t)
                              (setf state #'skip-and-ignore))
                            (garbage ()
-                             :report "Wrap bad input up-to next chunk as a (:GARBAGE ...) entry."
+                             :report "Wrap bad input up-to next chunk as a :GARBAGE entry."
                              (setf normal-exit-p t)
                              (setf state #'skip-and-garbage)))
                       (unless normal-exit-p
