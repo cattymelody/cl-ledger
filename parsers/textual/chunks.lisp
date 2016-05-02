@@ -66,19 +66,14 @@ precisely, it should be ready to accept:
 
 The following describes the possible configurations of TYPE and the
 corresponding additional arguments that are emitted by the parser.
-Below, COMMAND-LINE-ARGUMENTS represents a copy of the string that
-follows the 'test' keyword in the file.
 
-    :TEST :ERROR COMMAND-LINE-ARGUMENTS
-    Test with error message only.
-
-    :TEST :OUTPUT COMMAND-LINE-ARGUMENTS
-    Test with normal output only.
-
-    :TEST :MIXED COMMAND-LINE-ARGUMENTS END-OUTPUT START-ERROR 
-    Test with mixed output/error (error typically contains warning
-    messages). The standard ouput is (SUBSEQ STRING 0 END-OUTPUT),
-    whereas the error output is (SUBSEQ STRING START-ERROR).
+    :TEST COMMAND-LINE-ARGUMENTS 
+    COMMAND-LINE-ARGUMENTS represents a copy of the string that
+    follows the 'test' keyword in the file. The content of the buffer
+    is the expected output with current journal and the given
+    arguments. If the output contains __ERROR__, whatever follows this
+    token is part of the error output. It is possible to have an empty
+    normal output and only an error output.
 
     :GARBAGE ERROR 
     Invalid entry due to the error-object ERROR, which is a non-NIL
@@ -312,18 +307,7 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
                    
                    ;; For tests, we also report the previously parsed
                    ;; test command and arguments.
-                   (:test (multiple-value-bind (begin end)
-                              (ppcre:scan "__ERROR__" buffer)
-                            (step
-                             (cond
-                               ((not begin)
-                                (emit :test :output test-command))
-                               ((zerop begin)
-                                (replace buffer buffer :start1 0 :start2 (1+ end))
-                                (decf (fill-pointer buffer) #.(length "__ERROR__"))
-                                (emit :test :error test-command))
-                               (t
-                                (emit :test :mixed test-command begin (1+ end)))))))
+                   (:test (emit :test test-command))
                    
                    ;; Python blocks terminates when other chunks
                    ;; start.  That's why we process the directly
