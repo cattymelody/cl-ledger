@@ -117,12 +117,8 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
 "
   (check-type function function)
   (let (;; Our parser is a state machine. The STATE variable holds the
-        ;; function currently handling incoming lines of inputs. It is
-        ;; initialized here to a void lambda form (instead of NIL) so
-        ;; that we can declare its type here below to be FUNCTION
-        ;; (chicken-and-egg problem between LET and LABELS: can't set
-        ;; it to #'DEFAULT here).
-        (state (lambda ()))
+        ;; function currently handling incoming lines of inputs.
+        state
 
         ;; Position inside stream at beginning of chunk
         start-position
@@ -148,8 +144,7 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
                  :adjustable t
                  :fill-pointer 0)))
     (declare (fixnum relative-position)
-             ((integer 0) relative-position)
-             (function state))
+             ((integer 0) relative-position))
     (labels
         ((reset ()
            (setf current-error         nil
@@ -349,6 +344,7 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
       (map-lines-on-shared-buffer
        stream
        (lambda (line &aux normal-exit-p)
+         (declare (function state))
          (unwind-protect
               (restart-case 
                   (progn
