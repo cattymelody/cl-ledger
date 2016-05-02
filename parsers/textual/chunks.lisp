@@ -263,12 +263,8 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
                                           :end-anchor)))))))))
            (setf state #'delimited-block))
 
-         ;;=========================
-         ;;
-         ;; STATE MACHINE FUNCTIONS
-         ;;
-         ;;=========================
-         
+         ;;; STATE MACHINE FUNCTIONS
+
          (skip-and-ignore (line)
            ;; Skip input until the start of the next chunk, discarding
            ;; intermediate lines.
@@ -350,33 +346,34 @@ CL-LEDGER-UTILS:INTERNAL-BUFFER-OVERFLOW error. See code for details.
              (t                        (buffer line)
                                        (setf state #'indented)))))
       (reset)
-      (map-lines-on-shared-buffer stream
-                  (lambda (line &aux normal-exit-p)
-                    (unwind-protect
-                         (restart-case 
-                             (progn
-                               (funcall state line)
-                               (setf normal-exit-p t))
-                           (skip ()
-                             :report "Skip to the next chunk."
-                             (setf normal-exit-p t)
-                             (setf state #'skip-and-ignore))
-                           (garbage ()
-                             :report "Wrap bad input up-to next chunk as a (:GARBAGE ...) entry."
-                             (setf normal-exit-p t)
-                             (setf state #'skip-and-garbage)))
-                      (unless normal-exit-p
-                        ;; NORMAL-EXIT-P is set to T after normal
-                        ;; termination of the callback function, or
-                        ;; when we invoke restarts over which we have
-                        ;; control. Otherwise, the state machine is
-                        ;; reset. This is useful in particular in
-                        ;; combination with the restart established by
-                        ;; MAP-LINES-ON-SHARED-BUFFER, which allows to
-                        ;; skip a single line. In that case, calling
-                        ;; (RESET) allows to empty the buffer and
-                        ;; retry with the default state.
-                        (reset)))))
+      (map-lines-on-shared-buffer
+       stream
+       (lambda (line &aux normal-exit-p)
+         (unwind-protect
+              (restart-case 
+                  (progn
+                    (funcall state line)
+                    (setf normal-exit-p t))
+                (skip ()
+                  :report "Skip to the next chunk."
+                  (setf normal-exit-p t)
+                  (setf state #'skip-and-ignore))
+                (garbage ()
+                  :report "Wrap bad input up-to next chunk as a (:GARBAGE ...) entry."
+                  (setf normal-exit-p t)
+                  (setf state #'skip-and-garbage)))
+           (unless normal-exit-p
+             ;; NORMAL-EXIT-P is set to T after normal
+             ;; termination of the callback function, or
+             ;; when we invoke restarts over which we have
+             ;; control. Otherwise, the state machine is
+             ;; reset. This is useful in particular in
+             ;; combination with the restart established by
+             ;; MAP-LINES-ON-SHARED-BUFFER, which allows to
+             ;; skip a single line. In that case, calling
+             ;; (RESET) allows to empty the buffer and
+             ;; retry with the default state.
+             (reset)))))
       (when (plusp (fill-pointer buffer))
         (restart-case
             (fail 'incomplete-chunk)
